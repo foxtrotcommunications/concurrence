@@ -42,37 +42,34 @@ flowchart TB
     user([Release description]) --> ui[Dashboard<br/>React + Vite]
     ui <-->|REST + SSE| api[Orchestrator service<br/>Express on Cloud Run]
 
-    subgraph google[Google AI]
-        gen[Gate generator<br/>GenAI SDK]
-        adk[Gate orchestrator<br/>Agent Development Kit]
-        gemini[[Gemini 3.5 Flash<br/>Vertex AI]]
-    end
+    api --> gen[Gate generator<br/>GenAI SDK]
+    api --> adk[Gate orchestrator<br/>Agent Development Kit]
 
-    api --> gen
-    api --> adk
-    gen -.->|generateContent| gemini
+    gen -.->|generateContent| gemini[[Gemini 3.5 Flash<br/>Vertex AI]]
     adk -.->|agent loop + tool calls| gemini
 
-    adk -->|routes each requirement<br/>to its owner over A2A| fleet
+    adk <-->|consult the owner —<br/>verdict + citation over A2A| fleet
 
     subgraph fleet[Domain authority fleet — GKE]
-        sec[Security pod]
-        lic[Licensing pod]
-        dat[Data Governance pod]
-        sre[SRE pod]
-        aud[Auditor pod<br/>ledger over A2A]
+        direction LR
+        sec[Security]
+        lic[Licensing]
+        dat[Data Governance]
+        sre[SRE]
+        aud[Auditor<br/>ledger over A2A]
     end
 
-    sec & lic & dat & sre -.->|verdict + citation| adk
-    sec & lic & dat & sre -.-> gemini
+    fleet -.->|policy reasoning| gemini
 
-    adk -->|every verdict| ledger{{Coverage ledger<br/>3 deterministic gates}}
+    adk -->|submits every verdict| ledger{{Coverage ledger<br/>ownership · citation · completeness}}
     ledger <-->|gate state| fs[(Firestore)]
     ledger -->|SHIP / HOLD| api
 
     style ledger fill:#1e6e52,color:#fff
     style gemini fill:#4285f4,color:#fff
 ```
+
+Each domain pod holds only its own policy corpus, so the four authorities are mutually blind; the Auditor exposes the ledger as an addressable fleet service. Every arrow into the ledger is a *request* to record — the ledger decides what actually lands.
 
 **The model routes; code decides.** The orchestrator's four tools are `list_requirements`, `consult_domain`, `record_verdict`, and `render_gate`. Not one of them can mark a requirement satisfied — `record_verdict` submits a verdict *to the ledger*, which applies the gates and may refuse it. When the ledger refuses, it returns a hint ("Only licensing can verdict this requirement", "a pass needs a citation that resolves in the owner corpus") and the agent re-routes or re-consults. Recovery is emergent; enforcement is not.
 
