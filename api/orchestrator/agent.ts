@@ -41,11 +41,18 @@ export function buildGateAgent(ctx: GateToolContext): LlmAgent {
  * record straight from the ledger — the agent's prose is reporting, never
  * the decision.
  */
-export async function runGate(ctx: GateToolContext): Promise<GateRunResult> {
+export async function runGate(
+  ctx: GateToolContext,
+  onEvent?: (line: string) => void,
+): Promise<GateRunResult> {
   ensureAdkEnv();
   const runner = new InMemoryRunner({ agent: buildGateAgent(ctx) });
   const transcript: string[] = [];
   let finalText = '';
+  const emit = (line: string) => {
+    transcript.push(line);
+    onEvent?.(line);
+  };
 
   for await (const event of runner.runEphemeral({
     userId: 'concurrence',
@@ -55,9 +62,9 @@ export async function runGate(ctx: GateToolContext): Promise<GateRunResult> {
   })) {
     for (const part of event.content?.parts ?? []) {
       if (part.functionCall) {
-        transcript.push(`→ ${part.functionCall.name}(${JSON.stringify(part.functionCall.args)})`);
+        emit(`→ ${part.functionCall.name}(${JSON.stringify(part.functionCall.args)})`);
       } else if (part.functionResponse) {
-        transcript.push(`← ${part.functionResponse.name}: ${JSON.stringify(part.functionResponse.response)}`);
+        emit(`← ${part.functionResponse.name}: ${JSON.stringify(part.functionResponse.response)}`);
       } else if (part.text && isFinalResponse(event)) {
         finalText += part.text;
       }
