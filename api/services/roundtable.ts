@@ -38,7 +38,12 @@ export class ControlPlaneClient {
     });
   }
 
-  createWorkspace(data: { name: string; template: string }): Promise<WorkspaceRef> {
+  createWorkspace(data: {
+    name: string;
+    template: string;
+    provider?: string;
+    model?: string;
+  }): Promise<WorkspaceRef> {
     return this.fetchJson('/api/workspaces', { method: 'POST', body: JSON.stringify(data) });
   }
 
@@ -53,6 +58,10 @@ export class ControlPlaneClient {
 
   startWorkspace(wsId: string): Promise<WorkspaceRef> {
     return this.fetchJson(`/api/workspaces/${wsId}/start`, { method: 'POST' });
+  }
+
+  listWorkspaces(): Promise<WorkspaceRef[]> {
+    return this.fetchJson('/api/workspaces');
   }
 
   /** Pin a workspace to a specific image tag (never :latest). */

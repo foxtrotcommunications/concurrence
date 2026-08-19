@@ -5,3 +5,4 @@ dist/
 gar_token
 *.log
 .DS_Store
+fleet.json

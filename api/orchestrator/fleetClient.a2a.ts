@@ -43,7 +43,11 @@ export function parseDomainReply(text: string): DomainResponse {
   const rationale = typeof candidate['rationale'] === 'string' ? candidate['rationale'] : '';
   const rawCitation = candidate['citation'] as { docId?: unknown; sectionId?: unknown } | undefined;
   const citation =
-    rawCitation && typeof rawCitation.docId === 'string' && typeof rawCitation.sectionId === 'string'
+    rawCitation &&
+    typeof rawCitation.docId === 'string' &&
+    typeof rawCitation.sectionId === 'string' &&
+    rawCitation.docId.length > 0 &&
+    rawCitation.sectionId.length > 0
       ? { docId: rawCitation.docId, sectionId: rawCitation.sectionId }
       : undefined;
   return { outcome, rationale, ...(citation ? { citation } : {}) };

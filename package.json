@@ -10,7 +10,8 @@
     "typecheck": "tsc -p packages/tools-gate --noEmit && tsc -p api --noEmit",
     "demo:gen": "tsx api/demo/generateGate.ts",
     "demo": "tsx api/demo/runGate.ts",
-    "provision": "tsx api/provisioning/provision.ts"
+    "provision": "tsx api/provisioning/provision.ts",
+    "demo:pods": "tsx api/demo/livePods.ts"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
