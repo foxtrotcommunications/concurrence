@@ -1,4 +1,4 @@
-import type { GateState } from '../types.ts';
+import type { GateState } from '../types.js';
 
 /**
  * Persistence seam for the coverage ledger. CoverageLedger is the single

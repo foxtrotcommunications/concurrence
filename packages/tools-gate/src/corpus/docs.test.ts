@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { CORPUS, DOMAINS } from './docs.ts';
-import { CorpusIndex } from './resolver.ts';
+import { CORPUS, DOMAINS } from './docs.js';
+import { CorpusIndex } from './resolver.js';
 
 describe('CORPUS', () => {
   it('constructs a valid index (unique docIds)', () => {

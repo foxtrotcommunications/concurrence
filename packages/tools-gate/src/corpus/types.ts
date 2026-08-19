@@ -1,4 +1,4 @@
-import type { Domain } from '../types.ts';
+import type { Domain } from '../types.js';
 
 /**
  * Policy corpora are structured so citations are code-resolvable: a verdict's

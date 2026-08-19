@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { CorpusIndex } from '../corpus/resolver.ts';
-import type { PolicyDoc } from '../corpus/types.ts';
-import type { Gate, Verdict } from '../types.ts';
-import { CoverageLedger } from './ledger.ts';
-import { InMemoryLedgerStore } from './store.ts';
+import { CorpusIndex } from '../corpus/resolver.js';
+import type { PolicyDoc } from '../corpus/types.js';
+import type { Gate, Verdict } from '../types.js';
+import { CoverageLedger } from './ledger.js';
+import { InMemoryLedgerStore } from './store.js';
 
 const corpus = new CorpusIndex([
   {

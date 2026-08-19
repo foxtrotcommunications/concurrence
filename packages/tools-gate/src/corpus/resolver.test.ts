@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { CorpusIndex } from './resolver.ts';
-import type { PolicyDoc } from './types.ts';
+import { CorpusIndex } from './resolver.js';
+import type { PolicyDoc } from './types.js';
 
 const docs: PolicyDoc[] = [
   {

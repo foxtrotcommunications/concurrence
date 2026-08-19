@@ -1,4 +1,4 @@
-import type { PolicyDoc } from './types.ts';
+import type { PolicyDoc } from './types.js';
 
 /**
  * The canonical policy corpora. Each document belongs to exactly one domain;

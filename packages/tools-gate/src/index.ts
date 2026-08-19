@@ -1,6 +1,10 @@
-export * from './types.ts';
-export * from './corpus/types.ts';
-export { CORPUS, DOMAINS, type KnownDomain } from './corpus/docs.ts';
-export { CorpusIndex } from './corpus/resolver.ts';
-export { CoverageLedger } from './ledger/ledger.ts';
-export { InMemoryLedgerStore, type LedgerStore } from './ledger/store.ts';
+export * from './types.js';
+export * from './corpus/types.js';
+export { CORPUS, DOMAINS, type KnownDomain } from './corpus/docs.js';
+export { CorpusIndex } from './corpus/resolver.js';
+export { CoverageLedger } from './ledger/ledger.js';
+export { InMemoryLedgerStore, type LedgerStore } from './ledger/store.js';
+export * from './plugin/types.js';
+export { concurrenceGate, registerFromEnv, configFromEnv } from './plugin/plugin.js';
+export { AUDITOR_CAPS } from './plugin/auditor.js';
+export { DOMAIN_POD_CAPS } from './plugin/domain.js';

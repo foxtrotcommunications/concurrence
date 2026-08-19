@@ -6,9 +6,9 @@ import type {
   RecordResult,
   RequirementState,
   Verdict,
-} from '../types.ts';
-import type { CorpusIndex } from '../corpus/resolver.ts';
-import type { LedgerStore } from './store.ts';
+} from '../types.js';
+import type { CorpusIndex } from '../corpus/resolver.js';
+import type { LedgerStore } from './store.js';
 
 /**
  * The coverage ledger: single writer of gate state, and the enforcement

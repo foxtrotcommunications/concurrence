@@ -9,7 +9,8 @@
     "test": "vitest run",
     "typecheck": "tsc -p packages/tools-gate --noEmit && tsc -p api --noEmit",
     "demo:gen": "tsx api/demo/generateGate.ts",
-    "demo": "tsx api/demo/runGate.ts"
+    "demo": "tsx api/demo/runGate.ts",
+    "provision": "tsx api/provisioning/provision.ts"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",

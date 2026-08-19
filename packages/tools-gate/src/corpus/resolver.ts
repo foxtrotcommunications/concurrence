@@ -1,5 +1,5 @@
-import type { Citation, Domain, ResolvedCitation } from '../types.ts';
-import type { PolicyDoc } from './types.ts';
+import type { Citation, Domain, ResolvedCitation } from '../types.js';
+import type { PolicyDoc } from './types.js';
 
 const EXCERPT_LENGTH = 240;
 
