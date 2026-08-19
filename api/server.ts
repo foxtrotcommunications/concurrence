@@ -20,10 +20,14 @@ import type { FleetDirectory } from './provisioning/provision.ts';
 const PORT = Number(process.env.PORT ?? 8899);
 const ledger = new CoverageLedger(new FirestoreLedgerStore(), new CorpusIndex(CORPUS));
 
+// Fleet directory: env secret in production (a2a keys never bake into an
+// image layer), fleet.json locally.
 const fleetFile = process.env.CONCURRENCE_FLEET_FILE ?? 'fleet.json';
-const directory: FleetDirectory | null = existsSync(fleetFile)
-  ? (JSON.parse(readFileSync(fleetFile, 'utf8')) as FleetDirectory)
-  : null;
+const directory: FleetDirectory | null = process.env.CONCURRENCE_FLEET_JSON
+  ? (JSON.parse(process.env.CONCURRENCE_FLEET_JSON) as FleetDirectory)
+  : existsSync(fleetFile)
+    ? (JSON.parse(readFileSync(fleetFile, 'utf8')) as FleetDirectory)
+    : null;
 
 const pickFleet = (mode: string | undefined, quirk: string | undefined): FleetClient | string => {
   if (mode === 'pods') {
@@ -89,6 +93,14 @@ app.get('/api/gate/:id/run', async (req, res) => {
     res.end();
   }
 });
+
+// Production: serve the built client (vite build → dist/client) with an SPA
+// fallback; in dev, vite serves the frontend and proxies /api here.
+const clientDir = new URL('../dist/client', import.meta.url).pathname;
+if (existsSync(clientDir)) {
+  app.use(express.static(clientDir));
+  app.get(/^(?!\/api\/).*/, (_req, res) => void res.sendFile(`${clientDir}/index.html`));
+}
 
 app.listen(PORT, () => {
   console.log(`[concurrence] api on :${PORT} (pods directory: ${directory ? 'loaded' : 'absent'})`);
