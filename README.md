@@ -207,6 +207,8 @@ The fleet's A2A keys are supplied as a Secret Manager secret rather than baked i
 
 **The generator writes better checklists than we did.** Hand-written requirements were generic. Generated ones ("the PayFlow SDK's new endpoint `api.payflow.example` is recorded with its transport security") are specific enough that a domain can actually verify them — and the deterministic repair pass (slugified ids, unknown owners remapped and reported, hard cap) means malformed output degrades instead of failing.
 
+**The citation gate proves provenance, not relevance.** It verifies that a receipt resolves to a real section of the owner's own corpus — it does not verify that the section is the *right* one for the requirement. We found this the honest way: a weak keyword heuristic in the simulated fleet cited "Rollback plan" for an observability requirement, and the ledger credited it, because the citation was genuine. Provenance is the property worth enforcing mechanically; relevance is a judgment, and the receipt is what makes it auditable by a human. A reviewer can see exactly which section a claim rests on and disagree.
+
 **Phantom dependencies survive every local test.** ADK worked locally for days while missing from the manifest — resolved from a parent directory's `node_modules`. The container died at boot. Deploying is the only test that catches this; we now audit every external import against the manifest.
 
 **A2A environment is injection-time-only.** Enabling a pod's A2A server after its first bring-up leaves the endpoint unmounted, because the environment block is written during initial provisioning. Getting this into the provisioner (rather than fixing it by hand afterward) is what makes the spin-up instructions above honest.

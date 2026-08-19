@@ -74,6 +74,8 @@ And it works on real infrastructure in both directions. A bare release descripti
 
 **The generator writes better checklists than we did.** Our hand-written requirements were generic. Generated ones — "the new endpoint `api.payflow.example` is recorded with its transport security" — are specific enough that a domain can actually verify them.
 
+**The citation gate proves provenance, not relevance.** It verifies that a receipt resolves to a real section of the owner's own corpus; it does not verify that the section is the *right* one. We found this the honest way — a weak keyword heuristic in the simulated fleet cited "Rollback plan" for an observability requirement and the ledger credited it, because the citation was genuine. That's the correct division: provenance is mechanically checkable, relevance is a judgment, and the receipt is precisely what lets a human audit that judgment instead of taking it on faith.
+
 **Agents are for interpretation; code is for adjudication.** The deterministic half of Concurrence *is* a rules engine, on purpose. The agents do the two things rules can't: turn a free-text release into owned requirements, and interpret free-text policy against a specific change. Drawing that line explicitly is the design.
 
 ## What's next
