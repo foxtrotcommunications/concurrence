@@ -7,11 +7,16 @@
   ],
   "scripts": {
     "test": "vitest run",
-    "typecheck": "tsc -p packages/tools-gate --noEmit"
+    "typecheck": "tsc -p packages/tools-gate --noEmit && tsc -p api --noEmit",
+    "demo:gen": "tsx api/demo/generateGate.ts"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
+    "tsx": "^4.23.12",
     "typescript": "^5.6.0",
     "vitest": "^3.0.0"
+  },
+  "dependencies": {
+    "@google/genai": "^2.17.1"
   }
 }
