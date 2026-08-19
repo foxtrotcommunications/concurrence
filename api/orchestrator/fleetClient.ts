@@ -65,7 +65,7 @@ export class FakeFleetClient implements FleetClient {
 
     const doc = CORPUS.find((d) => d.domain === domain);
     if (!doc) return { outcome: 'decline', rationale: `No policy corpus for domain ${domain}.` };
-    const section = bestSection(doc.sections, requirement.label);
+    const section = bestSection(doc.sections, `${requirement.id} ${requirement.label}`);
     return {
       outcome: 'pass',
       rationale: `Verified against ${doc.title} § "${section.heading}".`,
@@ -74,14 +74,39 @@ export class FakeFleetClient implements FleetClient {
   }
 }
 
-const bestSection = <T extends { heading: string; body: string }>(sections: T[], label: string): T => {
-  const words = new Set(label.toLowerCase().split(/[^a-z0-9]+/).filter((w) => w.length > 3));
+const STEM = 5;
+const tokens = (text: string): string[] =>
+  text
+    .toLowerCase()
+    .split(/[^a-z0-9]+/)
+    .filter((w) => w.length > 3);
+
+/**
+ * Pick the section a requirement most plausibly rests on.
+ *
+ * Matching is prefix-based rather than exact-substring: policy prose and
+ * requirement text rarely share an inflection ("alerting"/"alert",
+ * "metrics"/"metric"), and exact matching scored every section zero — which
+ * silently handed every requirement to whichever section happened to be
+ * first. Headings weigh more than bodies, and the requirement id counts as
+ * signal because generated ids are topical ("payment-sdk-observability").
+ */
+const bestSection = <T extends { heading: string; body: string }>(
+  sections: T[],
+  requirementText: string,
+): T => {
+  const wanted = new Set(tokens(requirementText).map((w) => w.slice(0, STEM)));
+  const hits = (text: string): number => {
+    const stems = new Set(tokens(text).map((w) => w.slice(0, STEM)));
+    let n = 0;
+    for (const stem of wanted) if (stems.has(stem)) n++;
+    return n;
+  };
+
   let best = sections[0]!;
   let bestScore = -1;
   for (const section of sections) {
-    const text = `${section.heading} ${section.body}`.toLowerCase();
-    let score = 0;
-    for (const word of words) if (text.includes(word)) score++;
+    const score = hits(section.heading) * 3 + hits(section.body);
     if (score > bestScore) {
       best = section;
       bestScore = score;

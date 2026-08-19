@@ -18,6 +18,14 @@ const gate: Gate = {
   ],
 };
 
+/** A one-requirement gate, for checking which section a domain reaches for. */
+const makeCtxFor = async (requirement: Gate['requirements'][number]): Promise<GateToolContext> => {
+  const ledger = new CoverageLedger(new InMemoryLedgerStore(), new CorpusIndex(CORPUS));
+  const single: Gate = { gateId: 'g-topic', release: gate.release, requirements: [requirement] };
+  await ledger.openGate(single);
+  return { ledger, fleet: new FakeFleetClient(), gateId: 'g-topic', release: single.release };
+};
+
 const makeCtx = async (fleet: FakeFleetClient): Promise<GateToolContext> => {
   const ledger = new CoverageLedger(new InMemoryLedgerStore(), new CorpusIndex(CORPUS));
   await ledger.openGate(gate);
@@ -139,5 +147,40 @@ describe('gate tools', () => {
     const response = await consultDomain(ctx, { domain: 'sre', requirementId: 'rollback' });
     if ('error' in response || !response.citation) throw new Error('expected cited pass');
     expect(response.citation).toEqual({ docId: 'sre-runbook', sectionId: 'rollback' });
+  });
+
+  // Regression: exact-substring matching scored every section zero (policy
+  // prose and requirement text rarely share an inflection), so the tie broke
+  // to sections[0] and every SRE requirement cited "Rollback plan".
+  it.each([
+    [
+      'payment-sdk-observability-metrics',
+      'Monitoring and alerting are configured for the new payment SDK to track transaction success rates and latency.',
+      'sre',
+      'observability',
+    ],
+    [
+      'oncall-briefed',
+      'The on-call rotation has been briefed on the release and the runbook is updated with new failure modes.',
+      'sre',
+      'oncall',
+    ],
+    [
+      'analytics-retention-window',
+      'The new analytics event stream has a retention period assigned and a deletion path for erasure requests.',
+      'data-governance',
+      'retention',
+    ],
+    [
+      'sdk-secrets-handling',
+      'Credentials for the payment SDK are read from the managed secret store and never appear in logs.',
+      'security',
+      'secrets',
+    ],
+  ])('routes %s to its own topic, not the first section', async (id, label, ownerDomain, expectedSection) => {
+    const topical = await makeCtxFor({ id, label, ownerDomain });
+    const response = await consultDomain(topical, { domain: ownerDomain, requirementId: id });
+    if ('error' in response || !response.citation) throw new Error('expected cited pass');
+    expect(response.citation.sectionId).toBe(expectedSection);
   });
 });

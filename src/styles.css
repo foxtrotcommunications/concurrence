@@ -63,6 +63,7 @@ textarea {
   resize: vertical;
 }
 textarea:focus, button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+input[type='radio'], input[type='checkbox'] { accent-color: var(--accent); }
 
 .controls { display: flex; flex-wrap: wrap; gap: 0.7rem; align-items: center; margin-top: 0.8rem; }
 button {
@@ -96,6 +97,7 @@ button:disabled { opacity: 0.55; cursor: default; }
 .banner.ship .decision { color: var(--ok); }
 .banner.hold .decision { color: var(--warn); }
 .banner .counts { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--muted); }
+.banner .qualifier { font-size: 0.86rem; color: var(--muted); font-style: italic; }
 
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 0.8rem; }
 .card {

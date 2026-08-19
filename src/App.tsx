@@ -148,6 +148,9 @@ export default function App() {
         <section className="board">
           <div className={`banner ${record.decision === 'SHIP' ? 'ship' : 'hold'}`}>
             <span className="decision">{record.decision}</span>
+            {record.counts.pending === record.requirements.length && (
+              <span className="qualifier">awaiting review — nothing ships until every owner concurs</span>
+            )}
             <span className="counts">
               {record.counts.credited} credited · {record.counts.failed} failed · {record.counts.pending} pending ·{' '}
               {record.counts.rejectedAttempts} rejected attempt{record.counts.rejectedAttempts === 1 ? '' : 's'}
