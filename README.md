@@ -88,7 +88,7 @@ Blueprints are **rendered from the corpus** ([`blueprints.ts`](api/application/b
 
 Open the [live demo](https://concurrence-1007343673363.us-central1.run.app), paste a release description, and generate a gate.
 
-**1. The release description is the evidence.** A vague description (`"adds analytics, a payment SDK, and a cart migration"`) returns **HOLD** — every domain fails its requirement for insufficient evidence. Describe the same release *with* its compliance facts and it returns **SHIP** with six receipts. The fleet does not ship on vibes.
+**1. The release description is the evidence.** A vague description (`"adds analytics, a payment SDK, and a cart migration"`) returns **HOLD** — every domain fails its requirement for insufficient evidence. Describe the same release *with* its compliance facts and it returns **SHIP**, with a citation on every requirement. The fleet does not ship on vibes.
 
 **2. The wrong expert gets no credit.** Route a licensing question to SRE and it declines — it has no licensing policy to reason from. If a verdict is submitted anyway, the ledger marks it `misdirected` and names the owner. The requirement stays red.
 
