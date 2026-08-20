@@ -1,6 +1,6 @@
 {
   "name": "@concurrence/tools-gate",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Deterministic coverage ledger, citation resolver, and domain registrars for Concurrence",
   "license": "Apache-2.0",
   "type": "module",

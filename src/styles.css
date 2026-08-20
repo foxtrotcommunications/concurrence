@@ -158,6 +158,8 @@ button:disabled { opacity: 0.55; cursor: default; }
 .label { margin: 0; font-size: 0.92rem; }
 
 .citation { margin: 0.55rem 0 0; font-size: 0.8rem; color: var(--ok); }
+/* On a blocked card the receipt names the rule that blocked it — not a pass. */
+.card.failed .citation { color: var(--crit); }
 .citation .receipt {
   font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; text-transform: uppercase;
   letter-spacing: 0.09em; border: 1px solid currentColor; border-radius: 4px;

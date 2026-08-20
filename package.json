@@ -13,7 +13,8 @@
     "provision": "tsx api/provisioning/provision.ts",
     "demo:pods": "tsx api/demo/livePods.ts",
     "dev": "concurrently -n api,web \"tsx api/server.ts\" \"vite\"",
-    "build": "vite build"
+    "build": "vite build",
+    "push:prompts": "tsx api/provisioning/pushPrompts.ts"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",

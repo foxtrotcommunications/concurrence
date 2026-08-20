@@ -90,10 +90,19 @@ export class CoverageLedger {
     }
 
     // An owner's fail needs no receipt: it can only block a release, never
-    // approve one, so the safe direction requires no proof.
+    // approve one, so the safe direction requires no proof. But when the
+    // owner DOES cite the section its block rests on, keep it — "not
+    // required" must not mean "discarded". An unresolvable citation on a
+    // fail is dropped silently rather than refused: refusing would convert
+    // a block into a pending, which is the unsafe direction.
     reqState.status = 'failed';
     reqState.verdict = verdict;
-    delete reqState.citation;
+    const resolved = verdict.citation ? this.corpus.resolve(owner, verdict.citation) : null;
+    if (resolved) {
+      reqState.citation = resolved;
+    } else {
+      delete reqState.citation;
+    }
     await this.store.put(state);
     return { recorded: true, state: reqState };
   }

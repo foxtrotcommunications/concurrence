@@ -103,7 +103,27 @@ describe('CoverageLedger', () => {
     expect(result.recorded).toBe(true);
     const record = await ledger.renderGate('g1');
     expect(record.requirements[0]?.status).toBe('failed');
+    expect(record.requirements[0]?.citation).toBeUndefined();
     expect(record.decision).toBe('HOLD');
+  });
+
+  it('keeps a resolvable citation supplied with a fail — not required is not discarded', async () => {
+    const result = await ledger.recordVerdict('g1', verdict({ outcome: 'fail' }));
+    expect(result.recorded).toBe(true);
+    const req = (await ledger.renderGate('g1')).requirements[0];
+    expect(req?.status).toBe('failed');
+    expect(req?.citation?.sectionHeading).toBe('Dependency review');
+  });
+
+  it('drops an unresolvable citation on a fail instead of refusing the block', async () => {
+    const result = await ledger.recordVerdict(
+      'g1',
+      verdict({ outcome: 'fail', citation: { docId: 'lic-matrix', sectionId: 'sdk-3' } }),
+    );
+    expect(result.recorded).toBe(true);
+    const req = (await ledger.renderGate('g1')).requirements[0];
+    expect(req?.status).toBe('failed');
+    expect(req?.citation).toBeUndefined();
   });
 
   it('lets the owner supersede a fail with a later credited pass', async () => {
