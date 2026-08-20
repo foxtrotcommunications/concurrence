@@ -21,8 +21,14 @@ export async function fetchHealth(): Promise<{ ok: boolean; pods: boolean }> {
   return res.json();
 }
 
+export interface AgentEvent {
+  kind: 'call' | 'result';
+  name: string;
+  payload: unknown;
+}
+
 export interface RunHandlers {
-  onLog: (line: string) => void;
+  onLog: (event: AgentEvent) => void;
   onDone: (record: GateRecord, summary: string) => void;
   onError: (message: string) => void;
 }
@@ -49,7 +55,7 @@ export async function runGate(gateId: string, mode: string, quirk: string, handl
       const data = /^data: (.*)$/m.exec(frame)?.[1];
       if (!event || !data) continue;
       const payload = JSON.parse(data);
-      if (event === 'log') handlers.onLog(payload.line);
+      if (event === 'log') handlers.onLog(payload as AgentEvent);
       else if (event === 'done') handlers.onDone(payload.record, payload.summary);
       else if (event === 'error') handlers.onError(payload.message);
     }

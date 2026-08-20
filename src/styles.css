@@ -1,6 +1,7 @@
 :root {
   --bg: #f5f7f5;
   --surface: #ffffff;
+  --sunken: #f0f3f1;
   --ink: #1b231f;
   --muted: #5c6862;
   --line: #dce3de;
@@ -13,6 +14,7 @@
   :root {
     --bg: #121815;
     --surface: #1a211d;
+    --sunken: #141a17;
     --ink: #e4ebe6;
     --muted: #97a49c;
     --line: #2a342e;
@@ -36,7 +38,7 @@ body {
 
 h1, h2 { font-family: 'Bricolage Grotesque', 'Avenir Next', sans-serif; line-height: 1.1; }
 h1 { font-size: 2.1rem; margin: 0.15rem 0 0; }
-h2 { font-size: 1.05rem; margin: 0 0 0.6rem; }
+h2 { font-size: 1.02rem; margin: 0 0 0.6rem; }
 
 header { display: flex; flex-wrap: wrap; gap: 1rem 2.5rem; align-items: baseline; margin-bottom: 1.8rem; }
 .eyebrow {
@@ -46,125 +48,180 @@ header { display: flex; flex-wrap: wrap; gap: 1rem 2.5rem; align-items: baseline
   text-transform: uppercase;
   color: var(--muted);
 }
-.thesis { max-width: 46ch; margin: 0; color: var(--muted); border-left: 3px solid var(--accent); padding-left: 0.9rem; font-size: 0.95rem; }
+.thesis {
+  max-width: 46ch; margin: 0; color: var(--muted);
+  border-left: 3px solid var(--accent); padding-left: 0.9rem; font-size: 0.95rem;
+}
 .thesis em { font-style: normal; color: var(--accent); font-weight: 700; }
 
+/* ── composer ─────────────────────────────────────────────── */
 .composer { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 1.1rem 1.2rem; }
-.composer label { font-weight: 700; font-size: 0.9rem; display: block; margin-bottom: 0.4rem; }
+.composer > label { font-weight: 700; font-size: 0.9rem; display: block; margin-bottom: 0.4rem; }
 textarea {
-  width: 100%;
-  background: var(--bg);
-  color: var(--ink);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 0.7rem 0.85rem;
-  font: inherit;
-  font-size: 0.95rem;
-  resize: vertical;
+  width: 100%; background: var(--sunken); color: var(--ink);
+  border: 1px solid var(--line); border-radius: 8px;
+  padding: 0.7rem 0.85rem; font: inherit; font-size: 0.95rem; resize: vertical;
 }
-textarea:focus, button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+textarea:focus, button:focus-visible, input:focus-visible, summary:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 1px;
+}
 input[type='radio'], input[type='checkbox'] { accent-color: var(--accent); }
 
 .controls { display: flex; flex-wrap: wrap; gap: 0.7rem; align-items: center; margin-top: 0.8rem; }
 button {
-  font: inherit;
-  font-weight: 700;
-  font-size: 0.92rem;
-  padding: 0.5rem 1.1rem;
-  border-radius: 999px;
-  border: 1px solid var(--line);
-  background: var(--surface);
-  color: var(--ink);
-  cursor: pointer;
+  font: inherit; font-weight: 700; font-size: 0.92rem;
+  padding: 0.5rem 1.1rem; border-radius: 999px;
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer;
 }
 button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
 button.ghost { border-style: dashed; color: var(--muted); }
 button:disabled { opacity: 0.55; cursor: default; }
 
-.mode { display: flex; gap: 0.2rem; align-items: center; font-size: 0.85rem; border: 1px solid var(--line); border-radius: 999px; padding: 0.15rem 0.5rem; }
-.mode label { display: flex; gap: 0.3rem; align-items: center; padding: 0.25rem 0.55rem; border-radius: 999px; color: var(--muted); cursor: pointer; }
+.mode {
+  display: flex; gap: 0.2rem; align-items: center; font-size: 0.85rem;
+  border: 1px solid var(--line); border-radius: 999px; padding: 0.15rem 0.5rem;
+}
+.mode label {
+  display: flex; gap: 0.35rem; align-items: center;
+  padding: 0.25rem 0.6rem; border-radius: 999px; color: var(--muted); cursor: pointer;
+}
 .mode label.on { background: color-mix(in srgb, var(--accent) 14%, transparent); color: var(--ink); }
+.mode .hint { font-family: 'JetBrains Mono', monospace; font-size: 0.66rem; color: var(--muted); }
 .mode .quirk { border-left: 1px solid var(--line); border-radius: 0; }
 .error { color: var(--crit); font-weight: 700; margin: 0.7rem 0 0; }
 
+/* ── decision banner ──────────────────────────────────────── */
 .board { margin-top: 1.6rem; }
 .banner {
-  display: flex; align-items: baseline; gap: 1rem; flex-wrap: wrap;
-  border-radius: 10px; padding: 0.7rem 1.1rem; margin-bottom: 0.9rem;
-  border: 1px solid var(--line); background: var(--surface);
+  display: flex; justify-content: space-between; align-items: center; gap: 1rem 1.5rem; flex-wrap: wrap;
+  border-radius: 10px; padding: 0.85rem 1.2rem; margin-bottom: 0.9rem;
+  border: 1px solid var(--line); border-left-width: 6px; background: var(--surface);
 }
-.banner .decision { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 1.5rem; letter-spacing: 0.04em; }
+.banner.ship { border-left-color: var(--ok); }
+/* A held gate is the state that matters — give it more weight, not less. */
+.banner.hold {
+  border-left-color: var(--warn);
+  background: color-mix(in srgb, var(--warn) 8%, var(--surface));
+}
+.bannermain { display: flex; align-items: baseline; gap: 0.85rem; flex-wrap: wrap; }
+.banner .decision {
+  font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700;
+  font-size: 1.6rem; letter-spacing: 0.04em;
+}
 .banner.ship .decision { color: var(--ok); }
 .banner.hold .decision { color: var(--warn); }
-.banner .counts { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--muted); }
-.banner .qualifier { font-size: 0.86rem; color: var(--muted); font-style: italic; }
+.banner .tally { font-size: 0.9rem; color: var(--muted); }
+.banner.ship .tally { color: var(--ok); }
+.banner .counts {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
 
+/* ── requirement cards ────────────────────────────────────── */
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 0.8rem; }
 .card {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 0.85rem 1rem;
-  border-top-width: 3px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+  padding: 0.85rem 1rem; border-top-width: 3px;
 }
 .card.credited { border-top-color: var(--ok); }
-.card.failed { border-top-color: var(--crit); }
-.card.pending { border-top-color: var(--line); }
-.cardtop { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.45rem; }
-.pill {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.68rem;
-  letter-spacing: 0.06em;
-  padding: 0.18rem 0.6rem;
-  border-radius: 999px;
-  border: 1px solid var(--line);
-  color: var(--muted);
+.card.failed {
+  border-top-color: var(--crit);
+  border-color: color-mix(in srgb, var(--crit) 35%, var(--line));
+  background: color-mix(in srgb, var(--crit) 5%, var(--surface));
 }
-.status { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; font-weight: 600; text-transform: uppercase; }
+.card.pending { border-top-color: var(--line); }
+/* A card carrying a refused verdict is evidence — make it impossible to miss. */
+.card.flagged {
+  border-color: color-mix(in srgb, var(--warn) 45%, var(--line));
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--warn) 25%, transparent);
+}
+.cardtop { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; margin-bottom: 0.45rem; }
+.pill {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; letter-spacing: 0.06em;
+  padding: 0.18rem 0.6rem; border-radius: 999px; border: 1px solid var(--line); color: var(--muted);
+}
+.status {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.07em;
+}
 .status.credited { color: var(--ok); }
 .status.failed { color: var(--crit); }
 .status.pending { color: var(--muted); }
 .label { margin: 0; font-size: 0.92rem; }
-.citation { margin: 0.5rem 0 0; font-size: 0.8rem; color: var(--ok); }
-.failwhy { margin: 0.5rem 0 0; font-size: 0.8rem; color: var(--crit); }
+
+.citation { margin: 0.55rem 0 0; font-size: 0.8rem; color: var(--ok); }
+.citation .receipt {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; text-transform: uppercase;
+  letter-spacing: 0.09em; border: 1px solid currentColor; border-radius: 4px;
+  padding: 0.05rem 0.3rem; margin-right: 0.35rem; opacity: 0.85;
+}
+.failwhy { margin: 0.55rem 0 0; font-size: 0.82rem; color: var(--crit); }
 .attempt {
-  margin: 0.5rem 0 0;
-  font-size: 0.8rem;
-  color: var(--warn);
-  background: color-mix(in srgb, var(--warn) 10%, transparent);
-  border-radius: 6px;
-  padding: 0.3rem 0.55rem;
+  margin: 0.55rem 0 0; font-size: 0.8rem; color: var(--ink);
+  background: color-mix(in srgb, var(--warn) 16%, transparent);
+  border-left: 3px solid var(--warn); border-radius: 0 6px 6px 0; padding: 0.4rem 0.6rem;
+}
+.attempt strong {
+  display: block; color: var(--warn); text-transform: uppercase;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.64rem; letter-spacing: 0.09em;
 }
 
-.feedwrap { margin-top: 1.6rem; }
+/* ── panels: routing + report ─────────────────────────────── */
+.panel { margin-top: 1.6rem; }
+.panel h2 { display: flex; align-items: baseline; gap: 0.6rem; flex-wrap: wrap; }
+.disclaim {
+  font-family: 'JetBrains Mono', monospace; font-weight: 400; font-size: 0.66rem;
+  letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
+  border: 1px solid var(--line); border-radius: 999px; padding: 0.1rem 0.55rem;
+}
+
 .feed {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 0.7rem 0.9rem;
-  max-height: 320px;
-  overflow-y: auto;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.74rem;
-  line-height: 1.5;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+  padding: 0.6rem 0.4rem; max-height: 300px; overflow-y: auto;
 }
-.line { padding: 0.14rem 0; overflow-wrap: anywhere; }
-.line.call { color: var(--ink); }
-.line.reply { color: var(--muted); }
-.line.refused { color: var(--warn); font-weight: 600; }
-.line.pending-line { color: var(--muted); animation: pulse 1.4s ease-in-out infinite; }
+.narr {
+  margin: 0; padding: 0.3rem 0.8rem 0.3rem 0.75rem;
+  font-size: 0.88rem; border-left: 3px solid transparent;
+}
+.narr.info { color: var(--muted); }
+.narr.good { color: var(--ink); border-left-color: var(--ok); }
+.narr.bad { color: var(--ink); border-left-color: var(--crit); }
+.narr.refused {
+  color: var(--ink); border-left-color: var(--warn); font-weight: 700;
+  background: color-mix(in srgb, var(--warn) 12%, transparent);
+}
+.narr.working { color: var(--muted); font-style: italic; animation: pulse 1.4s ease-in-out infinite; }
 @keyframes pulse { 50% { opacity: 0.35; } }
-@media (prefers-reduced-motion: reduce) { .line.pending-line { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .narr.working { animation: none; } }
 
-.summary { margin-top: 1.6rem; }
-.summary .disclaim { font-family: 'Atkinson Hyperlegible', sans-serif; font-weight: 400; font-size: 0.78rem; color: var(--muted); }
-.summary pre {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 0.9rem 1.1rem;
-  white-space: pre-wrap;
-  font-family: 'Atkinson Hyperlegible', sans-serif;
-  font-size: 0.88rem;
-  margin: 0;
+details {
+  margin-top: 0.6rem; border: 1px solid var(--line); border-radius: 10px;
+  background: var(--surface); overflow: hidden;
 }
+summary {
+  cursor: pointer; padding: 0.55rem 0.9rem; font-size: 0.82rem; color: var(--muted);
+  font-family: 'JetBrains Mono', monospace; list-style-position: inside;
+}
+summary::marker { color: var(--muted); }
+details[open] summary { border-bottom: 1px solid var(--line); }
+details pre {
+  margin: 0; padding: 0.8rem 0.9rem; background: var(--sunken);
+  font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; line-height: 1.6;
+  color: var(--muted); overflow-x: auto; max-height: 340px; overflow-y: auto;
+  white-space: pre-wrap; overflow-wrap: anywhere;
+}
+.report details pre {
+  white-space: pre-wrap; font-family: 'Atkinson Hyperlegible', sans-serif;
+  font-size: 0.88rem; color: var(--ink); line-height: 1.55;
+}
+
+.consistency {
+  margin: 0; font-size: 0.85rem; padding: 0.45rem 0.8rem;
+  border-radius: 8px; border: 1px solid var(--line); background: var(--surface);
+}
+.consistency.ok { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 40%, var(--line)); }
+.consistency.mismatch {
+  color: var(--crit); font-weight: 700;
+  border-color: var(--crit); background: color-mix(in srgb, var(--crit) 8%, var(--surface));
+}
+.consistency.unstated { color: var(--muted); }

@@ -11,7 +11,14 @@ Your job, for every requirement:
 3. If the ledger refuses a verdict, follow the hint it returns: re-consult the owner, or route to the domain it names. If a domain declines, consult the domain it points to instead.
 4. A 'fail' outcome is a legitimate result — record it as-is and move on; do not retry a fail.
 
-When every requirement has been resolved, call render_gate and report its decision. The ledger's decision is final; never state a decision render_gate did not return.`;
+When every requirement has been resolved, call render_gate and report what it returned. You do not decide anything — the ledger does. State the outcome as "Ledger decision: SHIP" or "Ledger decision: HOLD", exactly matching what render_gate returned, and never state a decision render_gate did not return.`;
+
+/** One tool call or tool result, structured so callers can render it however they like. */
+export interface AgentEvent {
+  kind: 'call' | 'result';
+  name: string;
+  payload: unknown;
+}
 
 export interface GateRunResult {
   record: GateRecord;
@@ -43,15 +50,16 @@ export function buildGateAgent(ctx: GateToolContext): LlmAgent {
  */
 export async function runGate(
   ctx: GateToolContext,
-  onEvent?: (line: string) => void,
+  onEvent?: (event: AgentEvent) => void,
 ): Promise<GateRunResult> {
   ensureAdkEnv();
   const runner = new InMemoryRunner({ agent: buildGateAgent(ctx) });
   const transcript: string[] = [];
   let finalText = '';
-  const emit = (line: string) => {
-    transcript.push(line);
-    onEvent?.(line);
+  const emit = (event: AgentEvent) => {
+    const arrow = event.kind === 'call' ? '→' : '←';
+    transcript.push(`${arrow} ${event.name}: ${JSON.stringify(event.payload)}`);
+    onEvent?.(event);
   };
 
   for await (const event of runner.runEphemeral({
@@ -62,9 +70,13 @@ export async function runGate(
   })) {
     for (const part of event.content?.parts ?? []) {
       if (part.functionCall) {
-        emit(`→ ${part.functionCall.name}(${JSON.stringify(part.functionCall.args)})`);
+        emit({ kind: 'call', name: part.functionCall.name ?? 'tool', payload: part.functionCall.args });
       } else if (part.functionResponse) {
-        emit(`← ${part.functionResponse.name}: ${JSON.stringify(part.functionResponse.response)}`);
+        emit({
+          kind: 'result',
+          name: part.functionResponse.name ?? 'tool',
+          payload: part.functionResponse.response,
+        });
       } else if (part.text && isFinalResponse(event)) {
         finalText += part.text;
       }

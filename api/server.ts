@@ -84,7 +84,7 @@ app.get('/api/gate/:id/run', async (req, res) => {
   try {
     const result = await runGate(
       { ledger, fleet, gateId, release: state.gate.release },
-      (line) => send('log', { line }),
+      (event) => send('log', event),
     );
     send('done', { record: result.record, summary: result.finalText });
   } catch (err) {
