@@ -92,6 +92,14 @@ button:disabled { opacity: 0.55; cursor: default; }
 
 /* ── decision banner ──────────────────────────────────────── */
 .board { margin-top: 1.6rem; }
+/* Which fleet produced these verdicts — never leave that ambiguous. */
+.provenance {
+  margin: 0 0 0.5rem; font-size: 0.78rem; color: var(--muted);
+  font-family: 'JetBrains Mono', monospace; letter-spacing: 0.02em;
+}
+.provenance strong { color: var(--ink); font-weight: 600; }
+.provenance.pods strong { color: var(--accent); }
+
 .banner {
   display: flex; justify-content: space-between; align-items: center; gap: 1rem 1.5rem; flex-wrap: wrap;
   border-radius: 10px; padding: 0.85rem 1.2rem; margin-bottom: 0.9rem;

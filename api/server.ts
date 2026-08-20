@@ -73,6 +73,12 @@ app.get('/api/gate/:id/run', async (req, res) => {
   const fleet = pickFleet(String(req.query.mode ?? 'fake'), String(req.query.quirk ?? ''));
   if (typeof fleet === 'string') return void res.status(400).json({ error: fleet });
 
+  // Re-open the gate so every run starts from pending. Without this, a second
+  // run over an already-resolved gate is a no-op — the agent sees everything
+  // credited and goes straight to render_gate, and the board keeps showing the
+  // PREVIOUS fleet's verdicts under the newly selected mode.
+  await ledger.openGate(state.gate);
+
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection', 'keep-alive');

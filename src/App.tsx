@@ -30,6 +30,8 @@ export default function App() {
   const [summary, setSummary] = useState('');
   const [error, setError] = useState('');
   const [mode, setMode] = useState<'fake' | 'pods'>('fake');
+  /** Which fleet produced the verdicts currently on the board. */
+  const [ranWith, setRanWith] = useState<'fake' | 'pods' | null>(null);
   const [quirk, setQuirk] = useState(false);
   const [podsAvailable, setPodsAvailable] = useState(false);
   const feedRef = useRef<HTMLDivElement>(null);
@@ -67,6 +69,7 @@ export default function App() {
     try {
       const { gate } = await createGate(release);
       setGateId(gate.gateId);
+      setRanWith(null);
       setRecord(await fetchGate(gate.gateId));
       setPhase('ready');
     } catch (err) {
@@ -81,6 +84,7 @@ export default function App() {
     setError('');
     setEvents([]);
     setSummary('');
+    setRanWith(null);
     pollRef.current = window.setInterval(() => {
       fetchGate(gateId).then(setRecord).catch(() => {});
     }, 1500);
@@ -90,6 +94,7 @@ export default function App() {
         stopPolling();
         setRecord(rec);
         setSummary(text);
+        setRanWith(mode);
         setPhase('done');
       },
       onError: (message) => {
@@ -177,7 +182,7 @@ export default function App() {
         {error && <p className="error">{error}</p>}
       </section>
 
-      {record && <Board record={record} />}
+      {record && <Board record={record} ranWith={ranWith} />}
 
       {(narration.length > 0 || phase === 'running') && (
         <section className="panel">
@@ -204,13 +209,19 @@ export default function App() {
   );
 }
 
-function Board({ record }: { record: GateRecord }) {
+function Board({ record, ranWith }: { record: GateRecord; ranWith: 'fake' | 'pods' | null }) {
   const { counts, decision, requirements } = record;
   const untouched = counts.pending === requirements.length;
   const blocked = requirements.filter((r) => r.status !== 'credited').length;
 
   return (
     <section className="board">
+      {ranWith && (
+        <p className={`provenance ${ranWith}`}>
+          verdicts produced by{' '}
+          <strong>{ranWith === 'pods' ? 'the live fleet — 5 pods on GKE, over A2A' : 'the simulated fleet'}</strong>
+        </p>
+      )}
       <div className={`banner ${decision === 'SHIP' ? 'ship' : 'hold'}`}>
         <div className="bannermain">
           <span className="decision">{decision}</span>
@@ -219,7 +230,9 @@ function Board({ record }: { record: GateRecord }) {
               ? 'awaiting review — nothing ships until every owner concurs'
               : decision === 'SHIP'
                 ? `concurrence achieved — ${counts.credited} of ${requirements.length} authorities concurred, each with a receipt`
-                : `${blocked} of ${requirements.length} requirement${blocked === 1 ? '' : 's'} not concurred`}
+                : counts.pending > 0
+                  ? `in review — ${counts.credited} concurred, ${counts.failed} blocked, ${counts.pending} still with their owners`
+                  : `${blocked} of ${requirements.length} requirement${blocked === 1 ? '' : 's'} not concurred`}
           </span>
         </div>
         <span className="counts">
