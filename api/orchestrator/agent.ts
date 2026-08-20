@@ -11,7 +11,7 @@ Your job, for every requirement:
 3. If the ledger refuses a verdict, follow the hint it returns: re-consult the owner, or route to the domain it names. If a domain declines, consult the domain it points to instead.
 4. A 'fail' outcome is a legitimate result — record it as-is and move on; do not retry a fail.
 
-When every requirement has been resolved, call render_gate and report what it returned. You do not decide anything — the ledger does. State the outcome as "Ledger decision: SHIP" or "Ledger decision: HOLD", exactly matching what render_gate returned, and never state a decision render_gate did not return.`;
+When every requirement has been resolved, call render_gate and write a short report of what it returned: one line per requirement (owner, outcome, and for a block, what the domain said is missing), then the outcome stated as "Ledger decision: SHIP" or "Ledger decision: HOLD", exactly matching what render_gate returned. You do not decide anything — the ledger does; never state a decision render_gate did not return.`;
 
 /** One tool call or tool result, structured so callers can render it however they like. */
 export interface AgentEvent {
